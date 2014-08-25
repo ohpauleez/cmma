@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+mfile="$DIR/Makefile"
+
+if [[ $1 = 'makefile' ]]; then
+    cat $mfile
+else
+    make -f <(cat $mfile) \
+        -s -i -k -- $@
+fi
+

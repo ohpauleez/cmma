@@ -1,0 +1,28 @@
+
+# You can use Maven to fetch your classpath;  For that matter, you can use whatever you like
+CMMA_CLASSPATH_BIN := $(mvncp)
+
+# Let's suppose you wanted to cache the classpath.
+# Comment out the line above and uncomment the following lines;
+#   Run `cmma classpath` first to cache the result before running other commands
+#
+#.classpath.cmma: pom.xml
+#	$(mvncp) > .classpath.cmma
+#
+#classpath: .classpath.cmma
+#	@echo $(shell cat .classpath.cmma)
+#
+#CMMA_CLASSPATH_BIN := cat .classpath.cmma
+
+
+# Let's suppose you only want to compile certain namespaces
+# If you don't specify namespaces, `cmma compile` will compile all of them
+#CMMA_COMPILE_NSES = cmma.classpath cmma.project
+
+
+# Additional Targets
+
+#.PHONY : testexample
+#testexample:
+#	@echo $(CMMA_CLJ)
+
