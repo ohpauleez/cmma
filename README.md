@@ -72,7 +72,7 @@ mechanism on how to talk about task dependencies.
 
 CMMA sits on top of Pomegranate to do Maven deps, but also opens deps up to
 tagged literals, and ships with a way to define dependencies via Git.
-Git deps are essentaially Leiningens Checkouts, but a way to lock down branch/commit/tag
+Git deps are essentially Leiningens Checkouts, but with a way to lock down branch/commit/tag
 and communicate those to others (ie: Checkouts are local only and can't be communicated to other team members).
 
 More to come...
