@@ -54,6 +54,9 @@ If you're using the shell script, treat `cmma` like you would `make`.
  * `cmma ns cmma.classpath` - Same as above
  * `cmma makefile` - echo out the core Makefile
 
+See the [examples](./cmma-clj/examples) directory for `Makefile.cmma` examples
+and using CMMA with lein, maven, or as a standalone tool.
+
 #### What about profiles/plugins/some-other-lein-feature?
 
 You're using Make now, so all Make functionality holds.  "Profiles" are just
