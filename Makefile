@@ -52,7 +52,7 @@ define cljvmfn
 	$(CMMA_JAVA) -cp $1 $(CMMA_JVM_ARGS) $(CMMA_CLJ) $2
 endef
 define cljcompilefn
-	$(CMMA_JAVA) -cp $1 $(CMMA_JVM_ARGS) -Dclojure.compile.path=target/classes -Dclojure.compiler.elide-meta='[:doc :file :line]' $(CMMA_CLJ_COMPILER) $2
+	$(CMMA_JAVA) -cp $1 $(CMMA_JVM_ARGS) -Dclojure.compile.path=$(CMMA_COMPILE_OUT) -Dclojure.compiler.elide-meta='[:doc :file :line]' $(CMMA_CLJ_COMPILER) $2
 endef
 define mvncp
 	$(CMMA_MVN) dependency:build-classpath | awk '/\[INFO\] Dependencies classpath:/{flag=1;next}/\[INFO\] --/{flag=0}flag{print}' | tr -d \\n
