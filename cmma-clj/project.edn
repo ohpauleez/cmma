@@ -5,8 +5,8 @@
        :license {:name "Eclipse Public License"
                  :url "http://www.eclipse.org/legal/epl-v10.html"}}
  :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/tools.nrepl "0.2.3"]
-                 [reply "0.3.4" :exclusions [[ring/ring-core]]]
+                 [org.clojure/tools.nrepl "0.2.5" :exclusions [[org.clojure/clojure]]]
+                 [reply "0.3.5" :exclusions [[ring/ring-core]]]
                  [com.cemerick/pomegranate "0.3.0" :exclusions [[org.apache.httpcomponents/httpclient]
                                                                 [org.codehaus.plexus/plexus-utils]
                                                                 [commons-codec]]]
@@ -18,8 +18,8 @@
                  [org.codehaus.plexus/plexus-utils "3.0"]
                  [commons-codec "1.5"]]
  :dev-dependencies [[org.clojure/tools.trace "0.7.8"]
-                    [org.clojure/tools.namespace "0.2.4"]
-                    [org.clojure/test.check "0.5.8"]]
+                    [org.clojure/tools.namespace "0.2.7"]
+                    [org.clojure/test.check "0.5.9"]]
  :repositories {"central" {:url "https://repo1.maven.org/maven2/"
                            :snapshots false}
                 "clojars" {:url "https://clojars.org/repo/"}
@@ -30,5 +30,5 @@
  :resource-paths ["resources"]
  :test-paths ["test"]
  :nrepl-options {:bind "127.0.0.1"
-                 :reply false}}
+                 :reply true}}
 

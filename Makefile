@@ -15,11 +15,19 @@ CMMA_BOOT ?= $(shell which boot)
 # If blank, it will use the CMMA classpath fn;  See the `getclasspath` function below
 CMMA_CLASSPATH_BIN ?=
 CMMA_VERSION ?= 0.1.0-SNAPSHOT
-CLJ_VERSION ?= 1.6.0
+#CLJ_VERSION ?= 1.6.0 # Not used anymore
 # This classpath is used for internal tasks, not for applications
 #CMMA_UBERJAR ?= $(MAKEFILE_PATH)/cmma-clj/target/cmma-0.1.0-SNAPSHOT-standalone.jar
-CMMA_UBERJAR ?= $(HOME)/scratch/cmma/cmma-clj/target/cmma-0.1.0-SNAPSHOT-standalone.jar
+CMMA_UBERJAR ?= $(HOME)/scratch/cmma/cmma-clj/target/cmma-$(CMMA_VERSION)-standalone.jar
 CMMA_CORE_CLASSPATH ?= $(CLASSPATH):$(CMMA_UBERJAR):.
+
+# TODO: Figure out how best to stich this through the defines or run at the top level
+#ifneq ("$(wildcard $(CMMA_UBERJAR))","")
+#	echo "CMMA's Uberjar was not detected! Patch up the core CMMA Makefile";
+#    echo "Current path: $(CMMA_UBERJAR)";
+#	echo "Exiting..."; exit 1;
+#endif
+#ABORT := $(shell test -s $(CMMA_UBERJAR) || { $(error "CMMA Uberjar not detected. See core Makefile. Exiting...") } )
 
 # CMMA Toggles
 #  - The custom target file
@@ -85,7 +93,9 @@ TARGET_DIRS = $(shell THE_DIRS=(); for xd in ($(RUN_ARGS)) \
 			  printf $$THE_DIRS)
 
 # Targets
-# clj, classpath, repl, nrepl, compile, ns, jar, uberjar, install, pom, makefile
+# clj, classpath, repl, nrepl, compile, ns, makefile
+# Future Targets
+# jar, uberjar, install, pom
 
 # This is to test out the target dir support, which isn't working : TODO
 #.PHONY : dirz
