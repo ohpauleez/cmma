@@ -4,9 +4,8 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 ;; Try nrepl 0.2.5 and reply 0.3.5 - :(
-                 [org.clojure/tools.nrepl "0.2.3"]
-                 [reply "0.3.4" :exclusions [[ring/ring-core]]]
+                 [org.clojure/tools.nrepl "0.2.5"]
+                 [reply "0.3.5" :exclusions [[ring/ring-core]]]
                  [com.cemerick/pomegranate "0.3.0" :exclusions [[org.apache.httpcomponents/httpclient]
                                                                 [org.codehaus.plexus/plexus-utils]
                                                                 [commons-codec]]]
