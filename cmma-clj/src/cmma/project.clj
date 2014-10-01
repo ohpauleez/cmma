@@ -52,7 +52,7 @@
      (if (or (.exists (io/file (str (.getPath working-dir) "/project.edn")))
              (nil? working-dir))
        (str (.getPath working-dir) "/")
-       (recur (.getParent working-dir))))))
+       (recur (io/file (.getParent working-dir)))))))
 
 (defn project-str []
   (str (or (project-root-path) "") "project.edn"))
