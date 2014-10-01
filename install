@@ -2,7 +2,7 @@
 
 CMMA_VERSION=0.1.0-SNAPSHOT
 CMMA_UBERJAR_LOCATION=$HOME/.m2/repository/ohpauleez/cmma/
-CMMA_INSTALL_DIR=$HOME/bin/cmma
+CMMA_INSTALL_DIR=$HOME/bin/cmmadir
 
 cd cmma-clj
 lein uberjar
