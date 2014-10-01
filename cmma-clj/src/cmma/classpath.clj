@@ -163,7 +163,11 @@
 (defn classpath-str
   ([project] (classpath-str project ":"))
   ([project separator]
-   (cstr/join separator (classpath project))))
+   (if (empty? project)
+     ;(println "You're trying to create a classpath, but no project file was found;")
+     ;(println "Defaulting to just the Clojure 1.6 jar...")
+     "$HOME/.m2/repository/org/clojure/clojure/1.6.0/clojure-1.6.0.jar:."
+     (cstr/join separator (classpath project)))))
 
 (defn -main [& args]
   (println (classpath-str (cmma.project/project))))

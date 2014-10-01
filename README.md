@@ -50,6 +50,10 @@ If you are copying the `Makefile` per project, just use `make` as you normally w
 
 If you're using the shell script, treat `cmma` like you would `make`.
 
+Dependencies are places in `project.edn`.  If a `project.edn` file isn't located,
+the classpath defaults to the Clojure 1.6 jar (resolved in your `~/.m2`),
+and the current working directory (`.`).
+
 #### Some examples
 
  * `cmma compile` - Compile namespaces to classes ahead of time
@@ -75,6 +79,9 @@ supplied for you - CMMA\_LEIN, CMMA\_MVN, etc.  Any binary you can call,
 anything you can do at the shell, you can do in here.  You also have a
 mechanism on how to talk about task dependencies.
 
+CMMA's extra functionality is written as a library of Clojure functions -
+you can use CMMA directly from any REPL and control it programmatically.
+
 #### What about CMMA's deps management?
 
 CMMA sits on top of Pomegranate to do Maven deps, but also opens deps up to
@@ -82,5 +89,29 @@ tagged literals, and ships with a way to define dependencies via Git.
 Git deps are essentially Leiningens Checkouts, but with a way to lock down branch/commit/tag
 and communicate those to others (ie: Checkouts are local only and can't be communicated to other team members).
 
-More to come...
+#### Working with the `project.edn` file
+
+The top-level `:app` holds project metadata.  Some of these fields will be used
+in jar generation.  Developers should feel free to add new keys within this map
+for their own purposes.
+
+Your project's `:dependencies` follow the same format found in Leiningen, with
+the addition that you can also use tagged literals.
+
+Additionally, you can specify `:dev-dependencies` - tools and libraries used for
+your day-to-day work.  By default, these are included for all tasks except for
+`jar` and `uberjar` (which do no currently exist).  If this is unacceptable for
+you, can change the behavior by overriding the classpath command.
+
+CMMA runs in "pedantic" mode.  That is, if any version conflicts or ranges are
+found, it will abort (and tell you, rather cryptically, how to fix it).
+
+In CMMA, the word is exactly how you see it - nothing is hidden from you.
+For this reason, you must always specify your `:respositories`, `:src-paths`,
+`:resource-paths`, and `:test-paths`.
+
+Currently, `:nrepl-options` can be set in the project.edn file, but that will
+most likely change.  In the future, nREPL settings will be passed in via the
+command line (or captured in your Makefile.cmma).  As it stands, `:nrepl-options`
+are optional.
 

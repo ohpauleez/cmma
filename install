@@ -6,10 +6,12 @@ CMMA_INSTALL_DIR=$HOME/bin/cmmadir
 
 cd cmma-clj
 lein uberjar
+lein install
 if [ ! -d $CMMA_UBERJAR_LOCATION ]; then
     mkdir -p $CMMA_UBERJAR_LOCATION
 fi
 cp target/cmma-$CMMA_VERSION-standalone.jar $CMMA_UBERJAR_LOCATION
+lein clean
 cd ..
 if [ ! -d $CMMA_INSTALL_DIR ]; then
     mkdir -p $CMMA_INSTALL_DIR

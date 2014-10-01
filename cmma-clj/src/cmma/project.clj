@@ -60,7 +60,15 @@
 (defn project
   ([] (project (project-str)))
   ([path]
-   (let [^String path (or path (project-str))]
-     (assoc (edn-resource path "" io/file)
-            :path (subs path 0 (.lastIndexOf path "/"))))))
+   (let [^String path (or path (project-str))
+         project-map (try
+                       (edn-resource path "" io/file)
+                       (catch Exception fnfe
+                         {}))]
+     (if (empty? project-map)
+       project-map
+       (assoc project-map
+              :path (if (pos? (.lastIndexOf path "/"))
+                      (subs path 0 (.lastIndexOf path "/"))
+                      ""))))))
 
