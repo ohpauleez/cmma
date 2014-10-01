@@ -18,7 +18,7 @@ CMMA_VERSION ?= 0.1.0-SNAPSHOT
 #CLJ_VERSION ?= 1.6.0 # Not used anymore
 # This classpath is used for internal tasks, not for applications
 #CMMA_UBERJAR ?= $(MAKEFILE_PATH)/cmma-clj/target/cmma-0.1.0-SNAPSHOT-standalone.jar
-CMMA_UBERJAR ?= $(HOME)/scratch/cmma/cmma-clj/target/cmma-$(CMMA_VERSION)-standalone.jar
+CMMA_UBERJAR ?= $(HOME)/.m2/repository/ohpauleez/cmma/cmma-$(CMMA_VERSION)-standalone.jar
 CMMA_CORE_CLASSPATH ?= $(CLASSPATH):$(CMMA_UBERJAR):.
 
 # TODO: Figure out how best to stich this through the defines or run at the top level

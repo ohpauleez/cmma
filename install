@@ -1,0 +1,18 @@
+#!/bin/bash
+
+CMMA_VERSION=0.1.0-SNAPSHOT
+CMMA_UBERJAR_LOCATION=$HOME/.m2/repository/ohpauleez/cmma/
+CMMA_INSTALL_DIR=$HOME/bin/cmma
+
+cd cmma-clj
+lein uberjar
+if [ ! -d $CMMA_UBERJAR_LOCATION ]; then
+    mkdir -p $CMMA_UBERJAR_LOCATION
+fi
+cp target/cmma-$CMMA_VERSION-standalone.jar $CMMA_UBERJAR_LOCATION
+cd ..
+if [ ! -d $CMMA_INSTALL_DIR ]; then
+    mkdir -p $CMMA_INSTALL_DIR
+fi
+cp Makefile cmma $CMMA_INSTALL_DIR
+
