@@ -50,10 +50,6 @@ If you are copying the `Makefile` per project, just use `make` as you normally w
 
 If you're using the shell script, treat `cmma` like you would `make`.
 
-Dependencies are places in `project.edn`.  If a `project.edn` file isn't located,
-the classpath defaults to the Clojure 1.6 jar (resolved in your `~/.m2`),
-and the current working directory (`.`).
-
 #### Some examples
 
  * `cmma compile` - Compile namespaces to classes ahead of time
@@ -84,10 +80,18 @@ you can use CMMA directly from any REPL and control it programmatically.
 
 #### What about CMMA's deps management?
 
+As stated above, you can use any tool you'd like to manage dependencies.
+CMMA also can manage your dependencies for you.
+
 CMMA sits on top of Pomegranate to do Maven deps, but also opens deps up to
 tagged literals, and ships with a way to define dependencies via Git.
 Git deps are essentially Leiningens Checkouts, but with a way to lock down branch/commit/tag
 and communicate those to others (ie: Checkouts are local only and can't be communicated to other team members).
+
+Dependencies are placed in `project.edn`.  If a `project.edn` file isn't located,
+and you haven't told CMMA to use another tool to resolve the classpath,
+the classpath defaults to the Clojure 1.6 jar (resolved in your `~/.m2`),
+and the current working directory (`.`).
 
 #### Working with the `project.edn` file
 
