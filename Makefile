@@ -138,6 +138,10 @@ repl:
 nrepl:
 	$(call cljvmfn,$(CMMA_CORE_CLASSPATH):$(call getclasspath),-m cmma.nrepl)
 
+.PHONY : clean-all
+clean-all:
+	rm -rf .cmma; rm -f .classpath.cmma
+
 # Which commands accept command line args?
 ifneq ($(findstring $1, 'clj ns maybe-namespaces'), "")
 	$(eval $(RUN_ARGS):;@:)
