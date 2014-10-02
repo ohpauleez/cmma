@@ -49,6 +49,7 @@
   ""
   [repo-dir start-point]
   (checkout! repo-dir "master")
+  (git! repo-dir "fetch")
   (git! repo-dir "pull" "origin" "master")
   (checkout! repo-dir "cmma-mark" true false start-point))
 

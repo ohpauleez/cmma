@@ -31,12 +31,12 @@
    (resolve-deps! deps {}))
   ([deps options]
   (let [{:keys [maven other]} (split-maven-deps deps)
-        {:keys [repositories local-repo offline? mirrors]} options
+        {:keys [repositories local-repo offline? mirrors path]} options
         ranges (atom [])
         overrides (atom [])]
     (try
       {:maven (aether/resolve-dependencies
-               :coordinates deps
+               :coordinates maven
                :repositories repositories
                :local-repo local-repo
                :offline? offline?
@@ -47,7 +47,7 @@
                                                                      overrides)))
        :ranges @ranges
        :overrides @overrides
-       :other (mapv deps/resolve-dep other)}
+       :other (mapv #(deps/resolve-dep % path) other)}
       (catch DependencyResolutionException e
         (println "There is most likely an error/typo in your
                  dependencies/dev-dependencies.\n")
@@ -133,7 +133,7 @@
                                (all-dependencies project)
                                (merge {}
                                       (:deps-settings project)
-                                      (select-keys project [:repositories])))]
+                                      (select-keys project [:repositories :path])))]
     (when (seq ranges)
       (throw (ex-info (apply str "Version ranges detected:\n"
                              (map message-for-range ranges))
@@ -156,7 +156,8 @@
     (concat (prepend-proj-path project :test-paths )
             (prepend-proj-path project :source-paths)
             (prepend-proj-path project :resource-paths)
-            (map deps/classpath-strs (:other deps))
+            (mapcat #(deps/classpath-strs % project)
+                 (filter #(satisfies? deps/Dependency %) (:other deps)))
             dep-paths
             ["."])))
 
