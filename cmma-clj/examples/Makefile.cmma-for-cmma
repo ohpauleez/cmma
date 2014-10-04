@@ -2,9 +2,9 @@
 # By default, cmma uses its own dependency management code to fetch your deps
 
 # Let's suppose you wanted to cache the classpath.
-# Comment out the line above and uncomment the following lines;
+# Uncomment the following lines;
 #   Run `cmma classpath` first to cache the result before running other commands
-#
+
 #.classpath.cmma: project.edn
 #	@echo $(call cmmaclasspath) > .classpath.cmma
 #
