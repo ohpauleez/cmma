@@ -68,6 +68,9 @@ endef
 define leincp
 	$(CMMA_LEIN) classpath
 endef
+define bootcp
+	$(CMMA_BOOT) show -c
+endef
 define cmmaclasspath
 $(call cljfn, $(CMMA_CORE_CLASSPATH), -m cmma.classpath)
 endef

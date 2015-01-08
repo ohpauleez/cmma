@@ -16,6 +16,7 @@ target/
 .lein-*
 repl-port
 .nrepl-port
+.nrepl-history
 .repl
 
 # Datomic
