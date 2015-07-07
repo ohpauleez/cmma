@@ -29,7 +29,7 @@
    {:port (port*)
     :bind (bind)})
   ([project]
-   (let [{:keys [nrepl-options]} project]
+   (let [nrepl-options (get-in project [:external :nrepl-options])]
      (merge
        (dissoc nrepl-options :reply)
        {:port (port* nrepl-options :port)
@@ -51,7 +51,7 @@
 (defn -main [& args]
   (let [prj (cmma.project/project (first args)) ;; `project` is nil-safe; defaults to "project.edn"
         nrepl (server (repl-settings prj))]
-    (if (get-in prj [:nrepl-options :reply])
+    (if (get-in prj [:external :nrepl-options :reply])
       (reply/-main)
       (do (println "Server running; Hit a key to shutdown:")
           (read-line)))
