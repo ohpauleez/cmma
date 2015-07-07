@@ -12,7 +12,8 @@
 
                 #cmma/git {:repo "git@github.com:ohpauleez/themis.git" ;; anything cloneable
                            :point "b7fb2280748a221e2052ad5d02baa617c4b74a89" ;; anything you can pass to checkout, including HEAD
-                           :on-classpath ["src"]}]
+                           :on-classpath ["src"]
+                           :recursive-deps false}]
  :dev-dependencies [[org.clojure/tools.trace "0.7.8"]
                     [org.clojure/tools.namespace "0.2.4"]
                     [org.clojure/test.check "0.5.8"]
@@ -28,6 +29,6 @@
  :source-paths ["src"]
  :resource-paths ["resources"]
  :test-paths ["test"]
- :nrepl-options {:bind "127.0.0.1"
-                :reply false}}
+ :external {:nrepl-options {:bind "127.0.0.1"
+                            :reply false}}}
 
