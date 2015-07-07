@@ -24,5 +24,10 @@
 
   (classpath-strs [t project]
     (mapv #(str (:path project) "/" git-deps-path (jgit/repo-name (:repo t)) "/" %)
-          (:on-classpath t))))
+          (:on-classpath t)))
+
+  (transitive-path [t project]
+    (if (:recursive-deps t)
+      (str (:path project) "/" git-deps-path (jgit/repo-name (:repo t)) "/")
+      nil)))
 

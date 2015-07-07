@@ -2,5 +2,6 @@
 
 (defprotocol Dependency
   (resolve-dep [t project-path])
-  (classpath-strs [t project]))
+  (classpath-strs [t project])
+  (transitive-path [t project]))
 

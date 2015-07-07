@@ -151,13 +151,30 @@
 (defn classpath [project]
   ;; Technically we could just comb through the edn file and make the .m2 strings,
   ;;  but then we'd miss the chance to bail on version ranges/overrides
-  (let [deps (resolve-project-deps! project)
+  (let [initial-deps (resolve-project-deps! project)
+        other-deps (filter #(satisfies? deps/Dependency %) (:other initial-deps))
+        ;; Group all viable :dependencies and :repositories of transitive deps (ala Git deps)
+        transitive-projects (reduce (fn [acc-map proj-map]
+                                      (let [tdeps (vec (distinct (into (:dependencies acc-map)
+                                                                       (:dependencies proj-map))))
+                                            treps (vec (distinct (into (:repositories acc-map)
+                                                                       (:repositories proj-map))))]
+                                        (assoc acc-map
+                                               :dependencies tdeps
+                                               :repositories treps)))
+                                    (map (fn [path]
+                                           (select-keys (cmma.project/project path)
+                                                        [:dependencies :repositories]))
+                                         (keep #(deps/transitive-path % project) other-deps)))
+        adjusted-proj (assoc project
+                             :dependencies (into (:dependencies project) (:dependencies transitive-projects []))
+                             :repositories (into (:repositories project) (:repositories transitive-projects [])))
+        deps (resolve-project-deps! adjusted-proj)
         dep-paths (graph->dependency-paths (:maven deps))]
     (concat (prepend-proj-path project :test-paths )
             (prepend-proj-path project :source-paths)
             (prepend-proj-path project :resource-paths)
-            (mapcat #(deps/classpath-strs % project)
-                 (filter #(satisfies? deps/Dependency %) (:other deps)))
+            (mapcat #(deps/classpath-strs % project) other-deps)
             dep-paths
             ["."])))
 
@@ -166,8 +183,8 @@
   ([project separator]
    (if (empty? project)
      ;(println "You're trying to create a classpath, but no project file was found;")
-     ;(println "Defaulting to just the Clojure 1.6 jar...")
-     "$HOME/.m2/repository/org/clojure/clojure/1.6.0/clojure-1.6.0.jar:."
+     ;(println "Defaulting to just the Clojure 1.7 jar...")
+     "$HOME/.m2/repository/org/clojure/clojure/1.7.0/clojure-1.7.0.jar:."
      (cstr/join separator (classpath project)))))
 
 (defn -main [& args]
