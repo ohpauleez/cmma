@@ -28,6 +28,6 @@
 
   (transitive-path [t project]
     (if (:recursive-deps t)
-      (str (:path project) "/" git-deps-path (jgit/repo-name (:repo t)) "/")
+      (str (:path project) "/" git-deps-path (jgit/repo-name (:repo t)) "/project.edn")
       nil)))
 

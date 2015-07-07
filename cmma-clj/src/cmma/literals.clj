@@ -12,7 +12,8 @@
          (= 3 (count (select-keys form [:repo :point :on-classpath])))
          (vector? (:on-classpath form))
          (every? string? (:on-classpath form))
-         (if (:recursive-deps form)
-           (instance? java.lang.Boolean (:recursive-deps form)))]}
+         (if (contains? form :recursive-deps)
+           (instance? java.lang.Boolean (:recursive-deps form))
+           true)]}
   (map->Git (merge {:recursive-deps false} form)))
 

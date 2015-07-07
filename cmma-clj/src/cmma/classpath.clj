@@ -154,23 +154,24 @@
   (let [initial-deps (resolve-project-deps! project)
         other-deps (filter #(satisfies? deps/Dependency %) (:other initial-deps))
         ;; Group all viable :dependencies and :repositories of transitive deps (ala Git deps)
-        transitive-projects (reduce (fn [acc-map proj-map]
-                                      (let [tdeps (vec (distinct (into (:dependencies acc-map)
-                                                                       (:dependencies proj-map))))
-                                            treps (vec (distinct (into (:repositories acc-map)
-                                                                       (:repositories proj-map))))]
-                                        (assoc acc-map
-                                               :dependencies tdeps
-                                               :repositories treps)))
-                                    {:dependencies []
-                                     :repositories []}
-                                    (map (fn [path]
-                                           (select-keys (cmma.project/project path)
-                                                        [:dependencies :repositories]))
-                                         (keep #(deps/transitive-path % project) other-deps)))
+        transitive-projects (map (fn [path]
+                                   (select-keys (cmma.project/project path)
+                                                [:dependencies :repositories]))
+                                 (keep #(deps/transitive-path % project) other-deps))
+        transitive-deps (reduce (fn [acc-map proj-map]
+                                  (let [tdeps (vec (distinct (into (:dependencies acc-map)
+                                                                   (:dependencies proj-map))))
+                                        treps (into (:repositories acc-map)
+                                                    (:repositories proj-map))]
+                                    (assoc acc-map
+                                           :dependencies tdeps
+                                           :repositories treps)))
+                                {:dependencies []
+                                 :repositories {}}
+                                transitive-projects)
         adjusted-proj (assoc project
-                             :dependencies (into (:dependencies project) (:dependencies transitive-projects []))
-                             :repositories (into (:repositories project) (:repositories transitive-projects [])))
+                             :dependencies (distinct (into (:dependencies project) (:dependencies transitive-deps [])))
+                             :repositories (into (:repositories project) (:repositories transitive-deps {})))
         deps (resolve-project-deps! adjusted-proj)
         dep-paths (graph->dependency-paths (:maven deps))]
     (concat (prepend-proj-path project :test-paths )
