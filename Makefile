@@ -15,7 +15,7 @@ CMMA_BOOT ?= $(shell which boot)
 # If blank, it will use the CMMA classpath fn;  See the `getclasspath` function below
 CMMA_CLASSPATH_BIN ?=
 CMMA_VERSION ?= 0.1.0-SNAPSHOT
-#CLJ_VERSION ?= 1.6.0 # Not used anymore
+#CLJ_VERSION ?= 1.7.0 # Not used anymore
 # This classpath is used for internal tasks, not for applications
 #CMMA_UBERJAR ?= $(MAKEFILE_PATH)/cmma-clj/target/cmma-0.1.0-SNAPSHOT-standalone.jar
 CMMA_UBERJAR ?= $(HOME)/.m2/repository/ohpauleez/cmma/cmma-$(CMMA_VERSION)-standalone.jar

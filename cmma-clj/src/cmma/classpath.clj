@@ -162,6 +162,8 @@
                                         (assoc acc-map
                                                :dependencies tdeps
                                                :repositories treps)))
+                                    {:dependencies []
+                                     :repositories []}
                                     (map (fn [path]
                                            (select-keys (cmma.project/project path)
                                                         [:dependencies :repositories]))
@@ -190,3 +192,6 @@
 (defn -main [& args]
   (println (classpath-str (cmma.project/project))))
 
+(comment
+  (-main)
+  )
