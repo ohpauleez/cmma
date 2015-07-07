@@ -11,6 +11,11 @@ try cmma out, but everything is very much in flux.
 
 At some point a final rationale and install/usage directions will appear here.
 
+For now, CMMA is an experiment:  Clojure project management should just be
+a Clojure library built around what Clojure already offers.  CMMA also provides
+dependency management (on top of Aether/Pomegranate), but being a library,
+can use any dependency management tool you'd like (Maven, Gradle, Leiningen, Boot).
+
 ### License
 
 Copyright © 2014 Paul deGrandis
@@ -112,12 +117,13 @@ you, can change the behavior by overriding the classpath command.
 CMMA runs in "pedantic" mode.  That is, if any version conflicts or ranges are
 found, it will abort (and tell you, rather cryptically, how to fix it).
 
-In CMMA, the word is exactly how you see it - nothing is hidden from you.
+In CMMA, the world is exactly how you see it - nothing is hidden from you.
 For this reason, you must always specify your `:respositories`, `:src-paths`,
 `:resource-paths`, and `:test-paths`.
 
-Currently, `:nrepl-options` can be set in the project.edn file, but that will
-most likely change.  In the future, nREPL settings will be passed in via the
-command line (or captured in your Makefile.cmma).  As it stands, `:nrepl-options`
-are optional.
+Currently, `:nrepl-options` can be set in the project.edn file, in the
+`:external` section.  This will most likely change though.  In the future,
+nREPL settings will be passed in via the command line (or captured in your
+Makefile.cmma).  As it stands, `:nrepl-options` are optional, as are all
+`:external` options.
 
