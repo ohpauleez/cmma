@@ -24,7 +24,9 @@ Distributed under the [Eclipse Public License 1.0](http://opensource.org/license
 #### The "easy" way
 
 Edit any paths in the `install` script and run it.  This script automates the
-hard way.  This way assumes you'll use a central Makefile (see below)
+hard way.  This way assumes you'll use a central Makefile (see below).
+
+Add `$HOME/bin/cmmadir` to your path.
 
 #### The "hard" way
 
