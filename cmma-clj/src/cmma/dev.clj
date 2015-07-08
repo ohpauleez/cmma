@@ -9,8 +9,8 @@
 
 (def ^:dynamic *locals*)
 (defn eval-with-locals
-  "Evals a form with given locals. The locals should be a map of symbols to
-  values."
+  "Evals a form with given locals.
+  The locals should be a map of symbols to values."
   [locals form]
   (binding [*locals* locals]
     (eval
@@ -24,7 +24,7 @@
       request-exit
       input)))
 
-(def ^:dynamic level 0)
+(def ^{:dynamic true :tag 'long} level (long 0))
 (def counter (atom 1000))
 (defn inc-counter []
   (swap! counter inc))
@@ -40,29 +40,41 @@
   (throw quit-dr-exception))
 
 (defn caught [exc]
-  (if (= (.getCause ^Throwable exc) quit-dr-exception)
+  (if (or (= exc quit-dr-exception)
+          (= (.getCause ^Throwable exc) quit-dr-exception))
     (throw quit-dr-exception)
     (clojure.main/repl-caught exc)))
 
 (defmacro debug-repl
   "Starts a REPL with the local bindings available."
   ([]
-   `(debug-repl nil))
-  ([form]
-   `(let [counter# (inc-counter)
-          eval-fn# (partial eval-with-locals (local-bindings))]
+   `(debug-repl nil ~(meta &form)))
+  ([retform]
+   `(debug-repl retform ~(meta &form)))
+  ([retform form-meta]
+   `(let [debug-meta# ~(assoc form-meta
+                              :ns *ns*
+                              :file *file*)
+          eval-fn# (fn [e-form#]
+                     (eval-with-locals (merge {(symbol "debug-meta") debug-meta#
+                                               (symbol "in-debug-ns") (fn [] (in-ns (ns-name (:ns debug-meta#))))}
+                                              (local-bindings)
+                                              {(symbol "quit-dr") ~quit-dr}) e-form#))]
       (try
-        (binding [level (inc level)]
+        (binding [level (unchecked-inc level)]
           (clojure.main/repl
-            :prompt #(print (str "dr-" level "-" counter# " => "))
+            :init (fn []
+                    (use 'clojure.core)
+                    (use 'clojure.repl))
+            :prompt #(print (str "dr-" level "-" (inc-counter) " [" *ns* "]=> "))
             :eval eval-fn#
             :read dr-read
             :caught caught))
         (catch Exception e#
           (if (= e# quit-dr-exception)
-            (if-let [new-form# (.nextElement quit-dr-exception)]
+            (if-let [new-form# (.nextElement ^java.util.Enumeration quit-dr-exception)]
               (eval-fn# new-form#)
-              (eval-fn# ~form))
+              (eval-fn# ~retform))
             (throw e#)))))))
 
 (defmacro assert-repl [assertion-form]
@@ -75,8 +87,9 @@
 (defmacro try-repl [body-form]
   `(try
      ~body-form
-     (catch Exception ex#
-       (debug-repl))))
+     (catch Throwable ex#
+       (let [~'debug-exception ex#]
+         (debug-repl)))))
 
 (defn make-error-handler
   "This takes a function that takes two args
@@ -87,7 +100,7 @@
     (uncaughtException [thread exception]
       (f thread exception))))
 
-(def debug-ex-handler (make-error-handler (fn [thread exception] (debug-repl))))
+(def debug-ex-handler (make-error-handler (fn [thread debug-exception] (debug-repl))))
 
 (defn debug-uncaught-exceptions! []
   (Thread/setDefaultUncaughtExceptionHandler debug-ex-handler))
