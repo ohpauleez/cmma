@@ -47,7 +47,11 @@
     (clojure.main/repl-caught exc)))
 
 (defmacro debug-repl
-  "Starts a REPL with the local bindings available."
+  "Starts a REPL with the local bindings available.
+   * () - quit the repl
+   * (quit-dr some-value) - quit the repl returning `some-value`; Useful when embedding DR
+   * (in-debug-ns) - move to the ns where the repl was started
+   * debug-meta - metadata captured at the repl call site"
   ([]
    `(debug-repl nil ~(meta &form)))
   ([retform]
@@ -80,8 +84,7 @@
             (if-let [new-form# (.nextElement ^java.util.Enumeration quit-dr-exception)]
               (eval-fn# new-form#)
               (eval-fn# ~retform))
-            (throw e#))))))
-  )
+            (throw e#)))))))
 
 (defmacro assert-repl [assertion-form]
   `(when *assert*
@@ -176,7 +179,7 @@
                                                                                           (symbol "current-form") ~current-form
                                                                                           ;(symbol "progress") ~progress
                                                                                           (symbol "step") ~step}))]
-                            (println "Form:" form
+                            (println "\nform:" form
                                      "\ncurrent-form:" current-form
                                      "\nprogress:" (formize-progress @progress)
                                      "\nstep:" step)
@@ -185,5 +188,4 @@
                             nil)))
                       current-form)
                     form))))
-
 
