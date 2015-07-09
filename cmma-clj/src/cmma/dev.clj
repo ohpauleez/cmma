@@ -1,4 +1,5 @@
-(ns cmma.dev)
+(ns cmma.dev
+  (:require [clojure.walk :as walk]))
 
 ;; Simpler debug-repl :: https://github.com/stuarthalloway/circumspec/blob/master/src/clojure/contrib/debug.clj
 (defmacro local-bindings
@@ -50,16 +51,20 @@
   ([]
    `(debug-repl nil ~(meta &form)))
   ([retform]
-   `(debug-repl retform ~(meta &form)))
+   `(debug-repl ~retform ~(meta &form)))
   ([retform form-meta]
+   `(debug-repl ~retform ~(meta &form) ~{}))
+  ([retform form-meta injected-locals]
    `(let [debug-meta# ~(assoc form-meta
                               :ns *ns*
                               :file *file*)
           eval-fn# (fn [e-form#]
                      (eval-with-locals (merge {(symbol "debug-meta") debug-meta#
                                                (symbol "in-debug-ns") (fn [] (in-ns (ns-name (:ns debug-meta#))))}
+                                              ~injected-locals
                                               (local-bindings)
-                                              {(symbol "quit-dr") ~quit-dr}) e-form#))]
+                                              {(symbol "quit-dr") ~quit-dr})
+                                       e-form#))]
       (try
         (binding [level (unchecked-inc level)]
           (clojure.main/repl
@@ -75,7 +80,8 @@
             (if-let [new-form# (.nextElement ^java.util.Enumeration quit-dr-exception)]
               (eval-fn# new-form#)
               (eval-fn# ~retform))
-            (throw e#)))))))
+            (throw e#))))))
+  )
 
 (defmacro assert-repl [assertion-form]
   `(when *assert*
@@ -133,4 +139,51 @@
 ;; Construct
 ;; (construct [inc dec] [10 10]) => (11 9)
 (def construct (partial map deliver))
+
+
+(defn- formize-progress [prog-vec]
+  (let [processed-form (loop [skip-elem 0
+                              token (first prog-vec)
+                              new-form []
+                              progress (next prog-vec)]
+                         (cond
+                           (and (nil? progress)
+                                (zero? skip-elem)) (conj new-form token)
+                           (nil? progress) new-form
+                           (and (zero? skip-elem)
+                                (coll? token)) (recur (count token) (first progress) (conj new-form token) (next progress))
+                           (pos? skip-elem) (recur (dec skip-elem) (first progress) new-form (next progress))
+                           (zero? skip-elem) (recur skip-elem (first progress) (conj new-form token) (next progress))))]
+    `(~@processed-form)))
+
+(defn step-debug [form]
+  "Step through an expression with a debug-repl.
+  Empty list is next step/continue: ()
+  Other locals:
+   * form - the whole form you're stepping through
+   * current-form - the current form/token you're on
+   * progress - an atom'd vector of all forms/tokens you've seen so far - CURRENTLY REMOVED
+   * *locals* - a map of all locals in scope"
+  (let [progress (atom [])]
+    (eval
+      (walk/prewalk (fn [current-form]
+                      (when (not= current-form form)
+                        (swap! progress conj current-form)
+                        (try
+                          (let [step (eval current-form)
+                                sdbg `(~@(formize-progress @progress) (debug-repl nil {} {(symbol "form") ~form
+                                                                                          (symbol "current-form") ~current-form
+                                                                                          ;(symbol "progress") ~progress
+                                                                                          (symbol "step") ~step}))]
+                            (println "Form:" form
+                                     "\ncurrent-form:" current-form
+                                     "\nprogress:" (formize-progress @progress)
+                                     "\nstep:" step)
+                            (eval sdbg)
+                            #_(debug-repl))
+                          (catch Throwable t
+                            nil)))
+                      current-form)
+                    form))))
+
 
