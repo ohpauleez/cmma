@@ -159,6 +159,10 @@
                            (zero? skip-elem) (recur skip-elem (first progress) (conj new-form token) (next progress))))]
     `(~@processed-form)))
 
+(defn- print-form [form]
+  (println "\nFinal form:" form)
+  form)
+
 (defn step-debug [form]
   "Step through an expression with a debug-repl.
   Empty list is next step/continue: ()
@@ -166,26 +170,33 @@
    * form - the whole form you're stepping through
    * current-form - the current form/token you're on
    * step - what the current-step evals to
+   * info - a string of all the step information
    * progress - an atom'd vector of all forms/tokens you've seen so far - CURRENTLY REMOVED
    * *locals* - a map of all locals in scope"
   (let [progress (atom [])]
     (eval
-      (walk/prewalk (fn [current-form]
-                      (when (not= current-form form)
-                        (swap! progress conj current-form)
-                        (try
-                          (let [step (eval current-form)
-                                sdbg `(~@(formize-progress @progress) (debug-repl nil {} {(symbol "form") ~form
+      (doto
+        (walk/prewalk (fn [current-form]
+                      (if (not= current-form form)
+                        (do (swap! progress conj current-form)
+                            (try
+                              (let [step (eval current-form)
+                                    info (str "\nform:" form
+                                              "\ncurrent-form:" current-form
+                                              "\nprogress:" (formize-progress @progress)
+                                              "\nstep:" step)
+                                    sdbg `(~@(formize-progress @progress) (debug-repl ~current-form
+                                                                                      {}
+                                                                                      {(symbol "form") ~form
                                                                                           (symbol "current-form") ~current-form
                                                                                           ;(symbol "progress") ~progress
-                                                                                          (symbol "step") ~step}))]
-                            (println "\nform:" form
-                                     "\ncurrent-form:" current-form
-                                     "\nprogress:" (formize-progress @progress)
-                                     "\nstep:" step)
-                            (eval sdbg))
-                          (catch Throwable t
-                            nil)))
-                      current-form)
-                    form))))
+                                                                                          (symbol "step") ~step
+                                                                                          (symbol "info") ~info}))]
+                                (println info)
+                                (eval sdbg))
+                              (catch Throwable t
+                                current-form)))
+                        current-form))
+                    form)
+        print-form))))
 
