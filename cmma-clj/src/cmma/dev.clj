@@ -179,8 +179,7 @@
                                      "\ncurrent-form:" current-form
                                      "\nprogress:" (formize-progress @progress)
                                      "\nstep:" step)
-                            (eval sdbg)
-                            #_(debug-repl))
+                            (eval sdbg))
                           (catch Throwable t
                             nil)))
                       current-form)
