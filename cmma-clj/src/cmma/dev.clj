@@ -162,6 +162,7 @@
   Other locals:
    * form - the whole form you're stepping through
    * current-form - the current form/token you're on
+   * step - what the current-step evals to
    * progress - an atom'd vector of all forms/tokens you've seen so far - CURRENTLY REMOVED
    * *locals* - a map of all locals in scope"
   (let [progress (atom [])]
