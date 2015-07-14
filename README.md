@@ -13,8 +13,11 @@ At some point a final rationale and install/usage directions will appear here.
 
 For now, CMMA is an experiment:  Clojure project management should just be
 a Clojure library built around what Clojure already offers.  CMMA also provides
-dependency management (on top of Aether/Pomegranate), but being a library,
+extensible dependency management (on top of Aether/Pomegranate), but being a library,
 can use any dependency management tool you'd like (Maven, Gradle, Leiningen, Boot).
+Dependency management can be extended using tagged-literals, and CMMA ships
+with Git-based dependency out-of-the-box.  See the [example `project.edn`](./cmma-clj/examples/project.edn)
+to get an idea.
 
 ### License
 
