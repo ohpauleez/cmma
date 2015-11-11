@@ -46,6 +46,9 @@ CMMA_COMPILE_NSES ?=
 CMMA_CLJ ?= clojure.main
 CMMA_CLJ_COMPILER ?= clojure.lang.Compile
 CMMA_COMPILE_OUT ?= target/classes
+CMMA_SREPL_ADDRESS ?= localhost
+CMMA_SREPL_PORT ?= 5555
+CMMA_SREPL_MAP ?= {:address \"$(CMMA_SREPL_ADDRESS)\" :port $(CMMA_SREPL_PORT) :accept clojure.core.server/repl}
 CMMA_JVM_ARGS ?=
 
 # Auxiliary Functions
@@ -136,6 +139,15 @@ ns:
 .PHONY : repl
 repl:
 	$(call cljvmfn,$(call getclasspath),-r)
+
+.PHONY : srepl
+srepl:
+	$(eval CMMA_JVM_ARGS += -Dclojure.server.repl="$(CMMA_SREPL_MAP)")
+	$(call cljvmfn,$(call getclasspath),-r)
+
+.PHONY : srepl-client
+srepl-client:
+	telnet -e  $(CMMA_SREPL_ADDRESS) $(CMMA_SREPL_PORT)
 
 .PHONY : nrepl
 nrepl:

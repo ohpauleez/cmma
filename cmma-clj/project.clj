@@ -3,7 +3,7 @@
   :url "https://github.com/ohpauleez/cmma"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.7.0"]
+  :dependencies [[org.clojure/clojure "1.8.0-RC1"]
                  [org.clojure/tools.nrepl "0.2.10" :exclusions [[org.clojure/clojure]]]
                  [reply "0.3.7" :exclusions [[ring/ring-core]
                                              [org.clojure/tools.nrepl]]]
