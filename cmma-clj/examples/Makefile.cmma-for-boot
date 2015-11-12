@@ -19,6 +19,10 @@ CMMA_CLASSPATH_BIN := $(bootcp)
 # If you don't specify namespaces, `cmma compile` will compile all of them
 #CMMA_COMPILE_NSES = cmma.classpath cmma.project
 
+# Redfine the nrepl task
+
+nrepl:
+	$(shell boot repl)
 
 # Additional Targets
 
