@@ -57,7 +57,7 @@ very-quiet = $(if $V, $1, @$1)
 
 # TODO: Take the tabs/spaces out, in case someone needs to compose these
 define cljfn
-	$(shell $(CMMA_JAVA) -cp $1 $(CMMA_CLJ) $2)
+$(shell $(CMMA_JAVA) -cp $1 $(CMMA_CLJ) $2)
 endef
 define cljvmfn
 	$(CMMA_JAVA) -cp $1 $(CMMA_JVM_ARGS) $(CMMA_CLJ) $2
