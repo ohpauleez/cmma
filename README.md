@@ -65,6 +65,8 @@ If you're using the shell script, treat `cmma` like you would `make`.
  * `cmma compile` - Compile namespaces to classes ahead of time
  * `cmma repl` - Launch a Clojure REPL
  * `cmma nrepl` - Launch an nREPL
+ * `cmma srepl` - Launch a Socket-REPL, and a local Clojure REPL
+ * `cmma srepl-client` - Launch a REPL instance connected to a running Socket-REPL
  * `cmma classpath` - Echo the classpath
  * `cmma clj` - Call "clojure.main"
  * `cmma clj -m cmma.classpath` - Run the `-main` in the "cmma.classpath" namespace
