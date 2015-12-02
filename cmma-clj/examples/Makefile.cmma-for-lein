@@ -22,7 +22,7 @@ CMMA_CLASSPATH_BIN := $(leincp)
 # Redfine the nrepl task
 
 nrepl:
-	$(shell lein repl)
+	@lein repl
 
 # Additional Targets
 
