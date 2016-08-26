@@ -5,8 +5,8 @@ CMMA_UBERJAR_LOCATION=$HOME/.m2/repository/ohpauleez/cmma/
 CMMA_INSTALL_DIR=$HOME/bin/cmmadir
 
 cd cmma-clj
-lein uberjar
 lein install
+lein uberjar
 if [ ! -d $CMMA_UBERJAR_LOCATION ]; then
     mkdir -p $CMMA_UBERJAR_LOCATION
 fi
