@@ -15,7 +15,7 @@ CMMA_BOOT ?= $(shell which boot)
 # If blank, it will use the CMMA classpath fn;  See the `getclasspath` function below
 CMMA_CLASSPATH_BIN ?=
 CMMA_VERSION ?= 0.1.0-SNAPSHOT
-CLJ_VERSION ?= 1.8.0# Used only for a REPL where a classpath isn't generated -- a REPL outside of a project
+CLJ_VERSION ?= 1.8.0# Used only for a REPL where a classpath isn't generated, and CMMA isn't found in M2 -- a REPL outside of a project
 # This classpath is used for internal tasks, not for applications
 #CMMA_UBERJAR ?= $(MAKEFILE_PATH)/cmma-clj/target/cmma-0.1.0-SNAPSHOT-standalone.jar
 CMMA_UBERJAR ?= $(HOME)/.m2/repository/ohpauleez/cmma/cmma-$(CMMA_VERSION)-standalone.jar
@@ -75,14 +75,17 @@ define bootcp
 	$(CMMA_BOOT) show -c
 endef
 define cmmaclasspath
-$(if $(call cljfn, $(CMMA_CORE_CLASSPATH), -m cmma.classpath),$(call cljfn, $(CMMA_CORE_CLASSPATH), -m cmma.classpath),$(HOME)/.m2/repository/org/clojure/clojure/$(CLJ_VERSION)/clojure-$(CLJ_VERSION).jar)
+$(call cljfn, $(CMMA_CORE_CLASSPATH), -m cmma.classpath)
+endef
+define resolveclasspath
+$(if $(call cmmaclasspath),$(call cmmaclasspath),$(HOME)/.m2/repository/org/clojure/clojure/$(CLJ_VERSION)/clojure-$(CLJ_VERSION).jar:.)
 endef
 # Classpath
 #  If CMMA Included-targets file specifies an alternative binary/function to run,
 #  use that to resolve and return the Classpath.
 #  Otherwise, use CMMA's classpath support.
 define getclasspath
-$(if $(CMMA_CLASSPATH_BIN),$(shell $(CMMA_CLASSPATH_BIN)),$(call cmmaclasspath))
+$(if $(CMMA_CLASSPATH_BIN),$(shell $(CMMA_CLASSPATH_BIN)),$(call resolveclasspath))
 endef
 define namespacesfn
     $(if $(CMMA_COMPILE_NSES),$(CMMA_COMPILE_NSES),$(shell find $1 -name "*.clj" -print | tr '/_' '.-' | awk '{ sub(/\.\./, ""); sub(/.clj/, ""); sub(/$2/, ""); print }'))
