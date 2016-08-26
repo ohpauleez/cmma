@@ -8,7 +8,7 @@
 classpath: .classpath.cmma
 	@echo $(shell cat .classpath.cmma)
 
-CMMA_CLASSPATH_BIN := cat .classpath.cmma
+#CMMA_CLASSPATH_BIN := cat .classpath.cmma
 
 # Let's suppose you only want to compile certain namespaces
 # If you don't specify namespaces, cmma will compile all of them

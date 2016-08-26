@@ -15,7 +15,7 @@ CMMA_BOOT ?= $(shell which boot)
 # If blank, it will use the CMMA classpath fn;  See the `getclasspath` function below
 CMMA_CLASSPATH_BIN ?=
 CMMA_VERSION ?= 0.1.0-SNAPSHOT
-#CLJ_VERSION ?= 1.7.0 # Not used anymore
+CLJ_VERSION ?= 1.8.0# Used only for a REPL where a classpath isn't generated -- a REPL outside of a project
 # This classpath is used for internal tasks, not for applications
 #CMMA_UBERJAR ?= $(MAKEFILE_PATH)/cmma-clj/target/cmma-0.1.0-SNAPSHOT-standalone.jar
 CMMA_UBERJAR ?= $(HOME)/.m2/repository/ohpauleez/cmma/cmma-$(CMMA_VERSION)-standalone.jar
@@ -75,7 +75,7 @@ define bootcp
 	$(CMMA_BOOT) show -c
 endef
 define cmmaclasspath
-$(call cljfn, $(CMMA_CORE_CLASSPATH), -m cmma.classpath)
+$(if $(call cljfn, $(CMMA_CORE_CLASSPATH), -m cmma.classpath),$(call cljfn, $(CMMA_CORE_CLASSPATH), -m cmma.classpath),$(HOME)/.m2/repository/org/clojure/clojure/$(CLJ_VERSION)/clojure-$(CLJ_VERSION).jar)
 endef
 # Classpath
 #  If CMMA Included-targets file specifies an alternative binary/function to run,
@@ -139,6 +139,10 @@ ns:
 .PHONY : repl
 repl:
 	$(call cljvmfn,$(call getclasspath),-r)
+
+.PHONY : rrepl
+rrepl:
+	rlwrap -c -b "(){}[],^%$#@\"\";:''|\\" $(call cljvmfn,$(call getclasspath),-r) && rm -f $(HOME)/.java_history
 
 .PHONY : srepl
 srepl:
